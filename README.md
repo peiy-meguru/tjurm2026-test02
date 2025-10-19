@@ -3,7 +3,7 @@
 #### 零、吐槽
 
 一坨屎啊这个编译，记得爆内存把make -j改成make -j1或j2，不然加虚拟内存也不一定够用。
-排错：安装到~/而不是/usr/local/之类的地方解决49%问题，使用-ji(1<=i6)解决49%问题。
+排错：安装到~/而不是/usr/local/之类的地方解决49%问题，使用-ji(1<=i<=6)解决49%问题。
 而且换完目录编译不报错了。（
 
 #### 一、安装步骤
@@ -22,7 +22,7 @@
                "name": "Linux",
                "includePath": [
                    "${workspaceFolder}/**",
-                   "~/opencv/opencv-build/"    //就是你安装opencv的目录
+                   "/usr/local/opencv4.5.4/include/opencv4"    //就是你安装opencv的目录
                ],
                "defines": [],
                "compilerPath": "/usr/bin/gcc",
