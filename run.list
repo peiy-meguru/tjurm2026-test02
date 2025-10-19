@@ -1,8 +1,9 @@
-resize
+split
 
 stop
 
 erode
+resize
 find_contours
 rect
 split
