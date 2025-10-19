@@ -1,5 +1,11 @@
 # OpenCV作业
 
+#### 零、吐槽
+
+一坨屎啊这个编译，记得爆内存把make -j改成make -j1或j2，不然加虚拟内存也不一定够用。
+排错：安装到~/而不是/usr/local/之类的地方解决49%问题，使用-ji(1<=i6)解决49%问题。
+而且换完目录编译不报错了。（
+
 #### 一、安装步骤
 
 1. 按照上次作业的下载流程下载本次作业即可
@@ -16,7 +22,7 @@
                "name": "Linux",
                "includePath": [
                    "${workspaceFolder}/**",
-                   "/usr/local/opencv4.5.4/include/opencv4"    //就是你安装opencv的目录
+                   "~/opencv/opencv-build/"    //就是你安装opencv的目录
                ],
                "defines": [],
                "compilerPath": "/usr/bin/gcc",
