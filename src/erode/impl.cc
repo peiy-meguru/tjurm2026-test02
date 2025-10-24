@@ -46,6 +46,10 @@ std::vector<cv::Mat> erode(const cv::Mat& src_erode, const cv::Mat& src_dilate) 
     cv::Mat dst_erode, dst_dilate;
 
     // TODO: 在这里实现你的代码
+    cv::Mat dst_erode_gray;
+    cv::cvtColor(src_erode,dst_erode_gray,cv::COLOR_BGR2GRAY,0); 
+    cv::threshold(dst_erode_gray,dst_erode,50,255,cv::THRESH_BINARY);
+    cv::Mat ker_erode = cv::getStructuringElement();
 
     return {dst_erode, dst_dilate};
 }
