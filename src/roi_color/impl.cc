@@ -30,6 +30,54 @@ std::unordered_map<int, cv::Rect> roi_color(const cv::Mat& input) {
      */
     std::unordered_map<int, cv::Rect> res;
     // IMPLEMENT YOUR CODE HERE
+    // 1. 预处理
+    // 1.1 将 input 转换成灰度图像
+    cv::Mat gray;
+    cv::cvtColor(input, gray, cv::COLOR_BGR2GRAY);
+
+    // 1.2 对灰度图像进行二值化，得到黑底白前景的二值化图
+    // THRESH_OTSU 会自动寻找最优阈值，THRESH_BINARY_INV 会将图像反转
+    cv::Mat binary;
+    cv::threshold(gray, binary, 0, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
+
+    // 2. 找到三个矩形 (findContours)
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(binary, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+    // 3. 对找到的轮廓进行处理
+    for (const auto& contour : contours) {
+        // 过滤掉过小的轮廓
+        if (cv::contourArea(contour) < 100) {
+            continue;
+        }
+
+        // 3.1 使用 cv::boundingRect 将轮廓转换成矩形 cv::Rect
+        cv::Rect rect = cv::boundingRect(contour);
+
+        // 3.2 使用该 cv::Rect 得到 input 中的 ROI区域
+        cv::Mat roi = input(rect);
+
+        // 3.3 使用统计的方法，得到该 ROI 区域的颜色
+        // cv::mean 计算 ROI 区域的平均颜色
+        cv::Scalar mean_color = cv::mean(roi);
+        double b = mean_color[0];
+        double g = mean_color[1];
+        double r = mean_color[2];
+
+        int color_key = -1;
+        if (b > g && b > r) {
+            color_key = 0; // Blue
+        } else if (g > b && g > r) {
+            color_key = 1; // Green
+        } else if (r > b && r > g) {
+            color_key = 2; // Red
+        }
+
+        // 3.4 将颜色 和 矩形位置 存入 map 中
+        if (color_key != -1) {
+            res[color_key] = rect;
+        }
+    }
 
     return res;
 }

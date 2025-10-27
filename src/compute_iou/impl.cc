@@ -17,5 +17,20 @@ float compute_iou(const cv::Rect& a, const cv::Rect& b) {
      * 运行测试点，显示通过就行，不通过会告诉你哪一组矩形错了。
     */
     // IMPLEMENT YOUR CODE HERE
-    return 0.f;
+    // 计算交集矩形
+    cv::Rect intersection = a & b;
+
+    // 计算交集面积
+    float intersection_area = intersection.area();
+
+    // 计算并集面积
+    float union_area = a.area() + b.area() - intersection_area;
+
+    // 避免除以零
+    if (union_area == 0) {
+        return 0.f;
+    }
+
+    // 返回交并比
+    return intersection_area / union_area;
 }
