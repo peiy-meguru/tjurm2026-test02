@@ -60,4 +60,6 @@ std::vector<cv::Mat> erode(const cv::Mat& src_erode, const cv::Mat& src_dilate) 
     cv::dilate(dst_dilate_gray, dst_dilate, dilate_kernel);
 
     return {dst_erode, dst_dilate};
+    // erode用于消除小的白色噪声，减小前景区域
+    // dilate用于填补物体中的空洞/减少黑色噪声，增加前景区域
 }
