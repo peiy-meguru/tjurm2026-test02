@@ -25,59 +25,35 @@ std::unordered_map<int, cv::Rect> roi_color(const cv::Mat& input) {
      *   3. 对找到的三个矩形，分别进行如下计算:
      *      1. 使用 cv::boundingRect 将轮廓转换成矩形 cv::Rect
      *      2. 使用该 cv::Rect 得到 input 中的 ROI区域 (写法: roi = input(rect))
-     *      3. 使用统计的方法，得到该 ROI 区域的颜色
+     *      3. 使用统计的方法，得到该 ROI 区域的颜色 -> ?
      *      4. 将颜色 和 矩形位置 存入 map 中
      */
     std::unordered_map<int, cv::Rect> res;
     // IMPLEMENT YOUR CODE HERE
-    // 1. 预处理
-    // 1.1 将 input 转换成灰度图像
-    cv::Mat gray;
+    cv::Mat gray, dst;
     cv::cvtColor(input, gray, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray, dst, 0, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);//thresh=0时，THRESH_OTSU会自动寻找最优阈值，这点很有意思
 
-    // 1.2 对灰度图像进行二值化，得到黑底白前景的二值化图
-    // THRESH_OTSU 会自动寻找最优阈值，THRESH_BINARY_INV 会将图像反转
-    cv::Mat binary;
-    cv::threshold(gray, binary, 0, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
+    std::vector<std::vector<cv::Point>> contours; // 用于存储所有找到的轮廓
+    std::vector<cv::Vec4i> hierarchy; // 用于存储轮廓的层级结构
+    cv::findContours(dst, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);//找矩形自然不用考虑什么嵌套
 
-    // 2. 找到三个矩形 (findContours)
-    std::vector<std::vector<cv::Point>> contours;
-    cv::findContours(binary, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-
-    // 3. 对找到的轮廓进行处理
-    for (const auto& contour : contours) {
-        // 过滤掉过小的轮廓
-        if (cv::contourArea(contour) < 100) {
-            continue;
-        }
-
-        // 3.1 使用 cv::boundingRect 将轮廓转换成矩形 cv::Rect
-        cv::Rect rect = cv::boundingRect(contour);
-
-        // 3.2 使用该 cv::Rect 得到 input 中的 ROI区域
+    double color_b;
+    double color_g;
+    double color_r;
+    for (int i = 0; i < contours.size(); i++)
+    {
+        cv::Rect rect = cv::boundingRect(contours[i]);
         cv::Mat roi = input(rect);
+        cv::Scalar mean_color = cv::mean(roi);//还有这个东西
+        // 算出来矩形偏向于哪个颜色
+        color_b = mean_color[0];
+        color_g = mean_color[1];
+        color_r = mean_color[2];
 
-        // 3.3 使用统计的方法，得到该 ROI 区域的颜色
-        // cv::mean 计算 ROI 区域的平均颜色
-        cv::Scalar mean_color = cv::mean(roi);
-        double b = mean_color[0];
-        double g = mean_color[1];
-        double r = mean_color[2];
-
-        int color_key = -1;
-        if (b > g && b > r) {
-            color_key = 0; // Blue
-        } else if (g > b && g > r) {
-            color_key = 1; // Green
-        } else if (r > b && r > g) {
-            color_key = 2; // Red
-        }
-
-        // 3.4 将颜色 和 矩形位置 存入 map 中
-        if (color_key != -1) {
-            res[color_key] = rect;
-        }
+        // 这代码不是很简洁，很易懂吗，有种纯真的美
+        res[(color_b >= color_g && color_b >= color_r) ? 0 : ((color_g >= color_b && color_g >= color_r) ? 1 : 2)] = rect;
     }
-
+    
     return res;
 }
