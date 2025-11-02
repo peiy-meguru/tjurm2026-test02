@@ -45,15 +45,16 @@ cv::Mat my_resize(const cv::Mat& input, float scale) {
             int x1 = x0 + 1;
             int y1 = y0 + 1;
             for (int c = 0; c < 3; ++c) {
-                uchar p00 = input.data[y0 * src_w * 3 + x0 * 3 + c];
-                uchar p10 = input.data[y0 * src_w * 3 + x1 * 3 + c];
-                uchar p01 = input.data[y1 * src_w * 3 + x0 * 3 + c];
-                uchar p11 = input.data[y1 * src_w * 3 + x1 * 3 + c];
+                unsigned char p00 = input.data[y0 * src_w * 3 + x0 * 3 + c];
+                unsigned char p10 = input.data[y0 * src_w * 3 + x1 * 3 + c];
+                unsigned char p01 = input.data[y1 * src_w * 3 + x0 * 3 + c];
+                unsigned char p11 = input.data[y1 * src_w * 3 + x1 * 3 + c];
                 float interpolated = (1.0f - dx) * (1.0f - dy) * p00 +
                                      dx * (1.0f - dy) * p10 +
                                      (1.0f - dx) * dy * p01 +
                                      dx * dy * p11;
-                uchar value = interpolated < 0 ? 0 : (interpolated > 255 ? 255 : static_cast<uchar>(interpolated));
+                unsigned char value = interpolated < 0 ? 0 : (interpolated > 255 ? 255 : static_cast<unsigned char>(interpolated));
+                // 防止插值结果越界
                 output.data[j * int_cols * 3 + i * 3 + c] = value;
             }
         }
@@ -70,15 +71,15 @@ cv::Mat my_resize(const cv::Mat& input, float scale) {
             int x1 = src_w - 1;
             int y1 = y0 + 1;
             for (int c = 0; c < 3; ++c) {
-                uchar p00 = input.data[y0 * src_w * 3 + x0 * 3 + c];
-                uchar p10 = input.data[y0 * src_w * 3 + x1 * 3 + c];
-                uchar p01 = input.data[y1 * src_w * 3 + x0 * 3 + c];
-                uchar p11 = input.data[y1 * src_w * 3 + x1 * 3 + c];
+                unsigned char p00 = input.data[y0 * src_w * 3 + x0 * 3 + c];
+                unsigned char p10 = input.data[y0 * src_w * 3 + x1 * 3 + c];
+                unsigned char p01 = input.data[y1 * src_w * 3 + x0 * 3 + c];
+                unsigned char p11 = input.data[y1 * src_w * 3 + x1 * 3 + c];
                 float interpolated = (1.0f - dx) * (1.0f - dy) * p00 +
                                      dx * (1.0f - dy) * p10 +
                                      (1.0f - dx) * dy * p01 +
                                      dx * dy * p11;
-                uchar value = interpolated < 0 ? 0 : (interpolated > 255 ? 255 : static_cast<uchar>(interpolated));
+                unsigned char value = interpolated < 0 ? 0 : (interpolated > 255 ? 255 : static_cast<unsigned char>(interpolated));
                 output.data[j * int_cols * 3 + i * 3 + c] = value;
             }
         }
@@ -95,15 +96,15 @@ cv::Mat my_resize(const cv::Mat& input, float scale) {
             int x1 = x0 + 1;
             int y1 = src_h - 1;
             for (int c = 0; c < 3; ++c) {
-                uchar p00 = input.data[y0 * src_w * 3 + x0 * 3 + c];
-                uchar p10 = input.data[y0 * src_w * 3 + x1 * 3 + c];
-                uchar p01 = input.data[y1 * src_w * 3 + x0 * 3 + c];
-                uchar p11 = input.data[y1 * src_w * 3 + x1 * 3 + c];
+                unsigned char p00 = input.data[y0 * src_w * 3 + x0 * 3 + c];
+                unsigned char p10 = input.data[y0 * src_w * 3 + x1 * 3 + c];
+                unsigned char p01 = input.data[y1 * src_w * 3 + x0 * 3 + c];
+                unsigned char p11 = input.data[y1 * src_w * 3 + x1 * 3 + c];
                 float interpolated = (1.0f - dx) * (1.0f - dy) * p00 +
                                      dx * (1.0f - dy) * p10 +
                                      (1.0f - dx) * dy * p01 +
                                      dx * dy * p11;
-                uchar value = interpolated < 0 ? 0 : (interpolated > 255 ? 255 : static_cast<uchar>(interpolated));
+                unsigned char value = interpolated < 0 ? 0 : (interpolated > 255 ? 255 : static_cast<unsigned char>(interpolated));
                 output.data[j * int_cols * 3 + i * 3 + c] = value;
             }
         }
@@ -120,15 +121,15 @@ cv::Mat my_resize(const cv::Mat& input, float scale) {
             int x1 = src_w - 1;
             int y1 = src_h - 1;
             for (int c = 0; c < 3; ++c) {
-                uchar p00 = input.data[y0 * src_w * 3 + x0 * 3 + c];
-                uchar p10 = input.data[y0 * src_w * 3 + x1 * 3 + c];
-                uchar p01 = input.data[y1 * src_w * 3 + x0 * 3 + c];
-                uchar p11 = input.data[y1 * src_w * 3 + x1 * 3 + c];
+                unsigned char p00 = input.data[y0 * src_w * 3 + x0 * 3 + c];
+                unsigned char p10 = input.data[y0 * src_w * 3 + x1 * 3 + c];
+                unsigned char p01 = input.data[y1 * src_w * 3 + x0 * 3 + c];
+                unsigned char p11 = input.data[y1 * src_w * 3 + x1 * 3 + c];
                 float interpolated = (1.0f - dx) * (1.0f - dy) * p00 +
                                      dx * (1.0f - dy) * p10 +
                                      (1.0f - dx) * dy * p01 +
                                      dx * dy * p11;
-                uchar value = interpolated < 0 ? 0 : (interpolated > 255 ? 255 : static_cast<uchar>(interpolated));
+                unsigned char value = interpolated < 0 ? 0 : (interpolated > 255 ? 255 : static_cast<unsigned char>(interpolated));
                 output.data[j * int_cols * 3 + i * 3 + c] = value;
             }
         }

@@ -45,14 +45,14 @@ std::unordered_map<int, cv::Rect> roi_color(const cv::Mat& input) {
     {
         cv::Rect rect = cv::boundingRect(contours[i]);
         cv::Mat roi = input(rect);
-        cv::Scalar mean_color = cv::mean(roi);//还有这个东西
-        // 算出来矩形偏向于哪个颜色
-        color_b = mean_color[0];
-        color_g = mean_color[1];
-        color_r = mean_color[2];
+        int y = roi.rows / 2;
+        int x = roi.cols / 2;
+        uchar* p = roi.data + y * roi.step + x * 3; // 3 channels (BGR)
+        int b = p[0];
+        int g = p[1];
+        int r = p[2];
 
-        // 这代码不是很简洁，很易懂吗，有种纯真的美
-        res[(color_b >= color_g && color_b >= color_r) ? 0 : ((color_g >= color_b && color_g >= color_r) ? 1 : 2)] = rect;
+        res[(b > g && b > r) ? 0 : (g > b && g > r) ? 1 : 2] = rect;
     }
     
     return res;
